@@ -39,11 +39,12 @@ foreach ($Lib in $MugstechLibs) {
         Write-Output "==> Installing layer dependencies ..."
         Set-Location "aws-layers\nodejs" && npm install "$($PackageDotJson.name)@latest" && `
             Write-Output "==> Generating layer archive..."
-        Get-ChildItem -Path .\* | Compress-Archive -DestinationPath "..\layer.zip" && Set-Location .. && `
+        Set-Location ..\
+        Get-ChildItem -Path .\nodej* | Compress-Archive -DestinationPath ".\layer.zip" && `
             Write-Output "==> Publishing $($LayersConfig.name) ..." && `
             aws lambda publish-layer-version `
             --layer-name $LayersConfig.name `
-            --description "$($LayersConfig.name) version $($PackageDotJson.version)" `
+            --description "$($LayersConfig.name) version $($PackageDotJson.version): $($LayersConfig.description)" `
             --zip-file "fileb://layer.zip" `
             --compatible-runtimes $LayersConfig.compatibleRuntimes `
             --region "eu-central-1" `
